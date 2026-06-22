@@ -3,155 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Penilaian Akademik - UBSI Soft Edition</title>
+    <title>Sistem Penilaian Akademik - UBSI Laravel Edition</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
-            --bg-main: #f8f6f0; /* Cream Lembut Nyaman di Mata */
-            --brutal-black: #2b2b2b; /* Hitam Muted, tidak terlalu menusuk */
-            --pastel-blue: #a3c9a8;
-            --soft-blue: #b3c5ff;
-            --soft-pink: #ffb7b2;
-            --soft-green: #c7ecc8;
-            --soft-purple: #e8d7ff;
+            --bg-main: #f3f4f6; /* Abu-abu ultra ringan khas Tailwind / Laravel */
+            --laravel-red: #ff2d20; /* Warna Identitas Resmi Laravel */
+            --laravel-dark: #1f2937; /* Gray 800 */
+            --laravel-gray-border: #e5e7eb; /* Gray 200 */
             --white-clean: #ffffff;
+            --soft-blue: #3b82f6;
+            --soft-green: #10b981;
+            --soft-yellow: #f59e0b;
         }
 
         body {
             background-color: var(--bg-main);
-            font-family: 'Poppins', sans-serif;
-            color: var(--brutal-black);
+            font-family: 'Inter', 'Poppins', sans-serif;
+            color: var(--laravel-dark);
             -webkit-font-smoothing: antialiased;
             padding-bottom: 3rem;
         }
 
-        /* SOFT GEN-Z CARD STYLING */
+        /* LARAVEL CLEAN CARD STYLING */
         .glass-card {
             background: var(--white-clean);
-            border: 2px solid var(--brutal-black);
-            border-radius: 12px;
-            box-shadow: 4px 4px 0px var(--brutal-black); /* Jauh lebih tipis & soft */
-            padding: 1.5rem;
+            border: 1px solid var(--laravel-gray-border);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            padding: 1.75rem;
             margin-bottom: 2rem;
-            transition: all 0.2s ease;
+            transition: box-shadow 0.2s ease;
         }
         
         .glass-card:hover {
-            transform: translate(-1px, -1px);
-            box-shadow: 6px 6px 0px var(--brutal-black);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
-        /* TOP NAVIGATION */
+        /* LARAVEL TOP NAVIGATION */
         .navbar-ubsi {
             background-color: var(--white-clean);
-            border-bottom: 3px solid var(--brutal-black);
-            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--laravel-gray-border);
+            padding: 0.85rem 2rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
         .form-label-soft {
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.03em;
-            color: var(--brutal-black);
-            margin-bottom: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: #4b5563; /* Gray 600 */
+            margin-bottom: 0.4rem;
             text-transform: uppercase;
         }
 
-        /* SOFT INPUTS */
+        /* LARAVEL STANDARD INPUTS */
         .input-soft {
-            border: 2px solid var(--brutal-black);
-            border-radius: 8px;
-            padding: 0.6rem 1rem;
+            border: 1px solid var(--laravel-gray-border);
+            border-radius: 6px;
+            padding: 0.55rem 0.85rem;
             font-size: 0.9rem;
-            font-weight: 500;
-            background-color: #fafafa;
-            color: var(--brutal-black);
-            transition: all 0.15s;
+            font-weight: 400;
+            background-color: #ffffff;
+            color: var(--laravel-dark);
+            transition: all 0.2s;
         }
 
         .input-soft:focus {
-            background-color: #FFF;
-            border-color: var(--brutal-black);
-            box-shadow: 3px 3px 0px var(--brutal-black);
+            background-color: #fff;
+            border-color: #fca5a5; /* Light red border focus */
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15); /* Soft Laravel red glow */
             outline: none;
         }
 
-        /* SOFT BADGES */
+        /* LARAVEL BADGES (Tailwind-like) */
         .status-badge {
-            padding: 0.4rem 0.8rem;
-            border: 2px solid var(--brutal-black);
-            border-radius: 6px;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px; /* Pill style */
             font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            box-shadow: 1px 1px 0px var(--brutal-black);
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
+            gap: 0.3rem;
         }
-        .status-lulus { background-color: #d1f4d2; color: #1e4620; }
-        .status-her { background-color: #ffe3b3; color: #5c3e09; }
-        .status-gagal { background-color: #ffccd5; color: #5c0f1b; }
+        .status-lulus { background-color: #d1fae5; color: #065f46; }
+        .status-her { background-color: #fef3c7; color: #92400e; }
+        .status-gagal { background-color: #fee2e2; color: #991b1b; }
 
-        /* SOFT BRUTAL BUTTONS */
+        /* LARAVEL BTN SYSTEM */
         .btn-brutal {
-            border: 2px solid var(--brutal-black) !important;
-            border-radius: 8px !important;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.02em;
-            box-shadow: 3px 3px 0px var(--brutal-black);
-            transition: all 0.1s ease;
+            border: 1px solid transparent !important;
+            border-radius: 6px !important;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
-        .btn-brutal:active {
-            transform: translate(3px, 3px) !important;
-            box-shadow: 0px 0px 0px var(--brutal-black) !important;
+        .btn-laravel-primary {
+            background-color: var(--laravel-red) !important;
+            color: #ffffff !important;
+        }
+        .btn-laravel-primary:hover {
+            background-color: #e0241b !important;
+        }
+        .btn-laravel-secondary {
+            background-color: #ffffff !important;
+            border: 1px solid var(--laravel-gray-border) !important;
+            color: var(--laravel-dark) !important;
+        }
+        .btn-laravel-secondary:hover {
+            background-color: #f9fafb !important;
         }
 
-        /* CUSTOM TABLE STYLE */
+        /* LARAVEL CRISP TABLE STYLE */
         .table-custom {
-            border: 2px solid var(--brutal-black);
-            border-radius: 8px;
+            border: 1px solid var(--laravel-gray-border);
+            border-radius: 6px;
             overflow: hidden;
         }
         .table-custom th {
-            background-color: #eef1f6 !important;
-            color: var(--brutal-black) !important;
-            font-weight: 700;
-            font-size: 0.8rem;
-            letter-spacing: 0.02em;
-            border: 1px solid var(--brutal-black) !important;
+            background-color: #f9fafb !important; /* Gray 50 */
+            color: #374151 !important; /* Gray 700 */
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--laravel-gray-border) !important;
             text-transform: uppercase;
+            padding: 0.75rem 1rem;
         }
         .table-custom td {
-            border: 1px solid var(--brutal-black);
-            font-weight: 500;
+            border-bottom: 1px solid var(--laravel-gray-border);
+            font-size: 0.875rem;
+            font-weight: 400;
             background-color: var(--white-clean);
+            padding: 0.75rem 1rem;
         }
         
         /* TABLE INPUT INLINE */
         .table-custom input {
-            border: 1px solid #e0e0e0;
-            font-weight: 700;
+            border: 1px solid var(--laravel-gray-border);
+            font-weight: 500;
             border-radius: 4px;
-            background: #fafafa;
+            background: #ffffff;
             padding: 0.25rem;
+            font-size: 0.85rem;
+            width: 70px;
+            transition: all 0.15s;
         }
         .table-custom input:focus {
-            border: 1px solid var(--brutal-black);
-            background: #FFF;
+            border-color: var(--laravel-red);
+            box-shadow: 0 0 0 2px rgba(255, 45, 32, 0.1);
             outline: none;
         }
 
@@ -161,36 +175,40 @@
             width: 100%;
         }
 
-        /* CUSTOM TABS */
+        /* LARAVEL TABS NAVIGATION */
         .nav-tabs-custom .nav-link {
-            border: 2px solid var(--brutal-black);
-            color: var(--brutal-black);
-            font-weight: 700;
-            text-transform: uppercase;
-            padding: 0.6rem 1.3rem;
-            border-radius: 8px;
-            background-color: var(--white-clean);
-            box-shadow: 3px 3px 0px var(--brutal-black);
-            transition: all 0.1s;
+            border: 1px solid transparent;
+            color: #6b7280; /* Gray 500 */
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .nav-tabs-custom .nav-link:hover {
+            color: var(--laravel-dark);
+            background-color: #e5e7eb;
         }
         .nav-tabs-custom .nav-link.active {
-            background-color: var(--soft-blue) !important;
-            color: var(--brutal-black) !important;
-            transform: translate(1px, 1px);
-            box-shadow: 1px 1px 0px var(--brutal-black);
+            background-color: var(--white-clean) !important;
+            color: var(--laravel-red) !important;
+            border: 1px solid var(--laravel-gray-border) !important;
+            font-weight: 600;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
+        /* LARAVEL METRIC PILL BOX */
         .info-pill-box {
-            border: 2px solid var(--brutal-black);
-            background-color: #edf4ff;
-            box-shadow: 3px 3px 0px var(--brutal-black);
-            border-radius: 8px;
+            border: 1px solid var(--laravel-gray-border);
+            background-color: var(--white-clean);
+            border-radius: 6px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
         @media print {
             .no-print { display: none !important; }
             .tab-pane { display: block !important; opacity: 1 !important; }
-            .glass-card { box-shadow: none !important; border: 2px solid #000 !important; margin-bottom: 1rem; background: white; }
+            .glass-card { box-shadow: none !important; border: 1px solid #000 !important; margin-bottom: 1rem; background: white; }
             body { background: white; }
         }
     </style>
@@ -199,23 +217,23 @@
 
     <nav class="navbar-ubsi d-flex justify-content-between align-items-center no-print sticky-top">
         <div class="d-flex align-items-center">
-            <div class="bg-dark text-white p-2 rounded-2 me-3 border border-1 border-white" style="box-shadow: 2px 2px 0px var(--brutal-black);">
-                <i class="bi bi-shield-check fs-4 text-info"></i>
+            <div class="bg-dark text-white p-2 rounded-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                <i class="bi bi-shield-check fs-5 text-white"></i>
             </div>
             <div>
-                <h1 class="navbar-brand-title m-0" style="font-size: 1.2rem; font-weight: 800; color: var(--brutal-black); letter-spacing: -0.01em;">UNIVERSITAS BINA SARANA INFORMATIKA</h1>
-                <span class="navbar-sub" style="font-size: 0.75rem; font-weight: 600; color: #7f8c8d; text-transform: uppercase;">✨ Portal Evaluasi Akademik & Penilaian Akhir ✨</span>
+                <h1 class="navbar-brand-title m-0" style="font-size: 1.1rem; font-weight: 700; color: var(--laravel-dark); letter-spacing: -0.01em;">UNIVERSITAS BINA SARANA INFORMATIKA</h1>
+                <span class="navbar-sub" style="font-size: 0.72rem; font-weight: 500; color: #6b7280; text-transform: uppercase;">Portal Evaluasi Akademik & Penilaian Akhir</span>
             </div>
         </div>
         <div class="no-print">
-            <button onclick="window.print()" class="btn btn-brutal px-4 text-dark" style="background-color: var(--soft-pink);">
+            <button onclick="window.print()" class="btn btn-brutal btn-laravel-secondary px-4">
                 <i class="bi bi-printer me-2"></i>Cetak PDF Sistem
             </button>
         </div>
     </nav>
 
     <div class="container-fluid px-4 pt-4 no-print">
-        <ul class="nav nav-pills nav-tabs-custom gap-3 p-2 bg-transparent" id="pills-tab" role="tablist">
+        <ul class="nav nav-pills nav-tabs-custom gap-2 p-1 bg-transparent" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#pills-dashboard" type="button" role="tab" aria-controls="pills-dashboard" aria-selected="true">
                     📋 Halaman Depan
@@ -236,26 +254,26 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="glass-card">
-                            <h5 class="fw-bold mb-4" style="font-weight:800;"><i class="bi bi-person-badge-fill me-2 text-secondary"></i>PROFIL KELAS</h5>
+                            <h6 class="fw-bold text-uppercase tracking-wider text-secondary mb-4" style="font-size: 0.8rem; letter-spacing: 0.05em;"><i class="bi bi-person-badge-fill me-2"></i>Profil Kelas</h6>
                             <div class="mb-3">
-                                <label class="form-label-soft">NAMA DOSEN PENGAMPU</label>
-                                <input type="text" id="inputDosen" class="form-control input-soft" placeholder="Masukkan nama dosen...">
+                                <label class="form-label-soft">Nama Dosen Pengampu</label>
+                                <input type="text" id="inputDosen" class="form-control input-soft w-100" placeholder="Masukkan nama dosen...">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label-soft">MATA KULIAH</label>
-                                <input type="text" id="inputMatkul" class="form-control input-soft" placeholder="Masukkan nama matkul...">
+                                <label class="form-label-soft">Mata Kuliah</label>
+                                <input type="text" id="inputMatkul" class="form-control input-soft w-100" placeholder="Masukkan nama matkul...">
                             </div>
                             <div class="mb-4">
-                                <label class="form-label-soft">KELAS</label>
-                                <input type="text" id="inputKelas" class="form-control input-soft" placeholder="Contoh: 63.2A.07">
+                                <label class="form-label-soft">Kelas</label>
+                                <input type="text" id="inputKelas" class="form-control input-soft w-100" placeholder="Contoh: 63.2A.07">
                             </div>
-                            <hr class="my-4 border-1 border-dark opacity-20">
-                            <div class="d-grid gap-3 no-print">
-                                <label class="btn btn-brutal py-2 text-dark" style="background-color: #d8f3dc;">
+                            <hr class="my-4" style="border-color: var(--laravel-gray-border);">
+                            <div class="d-grid gap-2 no-print">
+                                <label class="btn btn-brutal btn-laravel-secondary py-2 text-center" style="cursor: pointer;">
                                     <i class="bi bi-file-earmark-arrow-up me-2"></i>Import XLSX / CSV
                                     <input type="file" id="upload-excel" accept=".csv, .xlsx, .xls" class="d-none">
                                 </label>
-                                <button onclick="isiNilaiDefault()" class="btn btn-brutal py-2 text-dark" style="background-color: var(--soft-blue);">
+                                <button onclick="isiNilaiDefault()" class="btn btn-brutal btn-laravel-primary py-2">
                                     <i class="bi bi-lightning-charge-fill me-2"></i>Simulasi Nilai Acak
                                 </button>
                             </div>
@@ -263,10 +281,10 @@
                     </div>
 
                     <div class="col-lg-8">
-                        <div class="glass-card" style="background: #FFF;">
+                        <div class="glass-card">
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="fw-bold m-0" style="font-weight:800;"><i class="bi bi-pie-chart-fill me-2 text-secondary"></i>CHART KELULUSAN</h5>
-                                <div id="summaryStats" class="badge bg-light text-dark border border-1 border-dark px-3 py-2 rounded-2 fw-bold">Total: -</div>
+                                <h6 class="fw-bold text-uppercase tracking-wider text-secondary m-0" style="font-size: 0.8rem; letter-spacing: 0.05em;"><i class="bi bi-pie-chart-fill me-2"></i>Chart Kelulusan</h6>
+                                <div id="summaryStats" class="badge bg-light text-dark border px-3 py-2 roundedfw-medium" style="font-size: 0.75rem; border-color: var(--laravel-gray-border) !important;">Total: -</div>
                             </div>
                             <div class="row align-items-center">
                                 <div class="col-md-6">
@@ -275,19 +293,19 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6 mt-3 mt-md-0">
-                                    <div class="p-3 bg-light rounded-2 border border-2 border-dark">
-                                        <p class="fw-bold small text-muted mb-3">STATS LIVE TRACKER:</p>
+                                    <div class="p-3 bg-light rounded border" style="border-color: var(--laravel-gray-border) !important;">
+                                        <p class="fw-semibold small text-muted mb-3">STATS LIVE TRACKER:</p>
                                         <div class="d-flex justify-content-between mb-2 pb-1 border-bottom">
-                                            <span>🟢 LULUS</span>
-                                            <span id="labelLulus" class="fw-bold text-success fs-5">0%</span>
+                                            <span class="small fw-medium">🟢 LULUS</span>
+                                            <span id="labelLulus" class="fw-bold text-success">0%</span>
                                         </div>
                                         <div class="d-flex justify-content-between mb-2 pb-1 border-bottom">
-                                            <span>🟡 WAJIB HER (D)</span>
-                                            <span id="labelHer" class="fw-bold text-warning fs-5">0%</span>
+                                            <span class="small fw-medium">🟡 WAJIB HER (D)</span>
+                                            <span id="labelHer" class="fw-bold text-warning">0%</span>
                                         </div>
                                         <div class="d-flex justify-content-between">
-                                            <span>🔴 GAGAL (E)</span>
-                                            <span id="labelGagal" class="fw-bold text-danger fs-5">0%</span>
+                                            <span class="small fw-medium">🔴 GAGAL (E)</span>
+                                            <span id="labelGagal" class="fw-bold text-danger">0%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -302,50 +320,50 @@
                     
                     <div class="row align-items-center mb-4 pb-1 g-3">
                         <div class="col-md-4">
-                            <div class="p-3 info-pill-box text-dark">
-                                <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.72rem;">📚 MATA KULIAH</small>
-                                <h5 class="m-0 fw-bold" id="viewMatkul">-</h5>
+                            <div class="p-3 info-pill-box">
+                                <small class="d-block text-muted fw-semibold mb-1" style="font-size: 0.68rem; letter-spacing: 0.03em;">📚 MATA KULIAH</small>
+                                <h6 class="m-0 fw-bold" id="viewMatkul" style="color: var(--laravel-dark);">-</h6>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="p-3 info-pill-box text-dark" style="background-color: var(--soft-pink);">
-                                <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.72rem;">👤 DOSEN PENGAMPU</small>
-                                <h5 class="m-0 fw-bold" id="viewDosen">-</h5>
+                            <div class="p-3 info-pill-box">
+                                <small class="d-block text-muted fw-semibold mb-1" style="font-size: 0.68rem; letter-spacing: 0.03em;">👤 DOSEN PENGAMPU</small>
+                                <h6 class="m-0 fw-bold" id="viewDosen" style="color: var(--laravel-dark);">-</h6>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <div class="p-3 info-pill-box text-dark" style="background-color: var(--soft-purple);">
-                                <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.72rem;">🗂️ KELAS</small>
-                                <h5 class="m-0 fw-bold" id="viewKelas">-</h5>
+                            <div class="p-3 info-pill-box">
+                                <small class="d-block text-muted fw-semibold mb-1" style="font-size: 0.68rem; letter-spacing: 0.03em;">🗂️ KELAS</small>
+                                <h6 class="m-0 fw-bold" id="viewKelas" style="color: var(--laravel-dark);">-</h6>
                             </div>
                         </div>
                     </div>
 
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-                        <h5 class="fw-bold m-0" style="font-weight:800;"><i class="bi bi-grid-3x3-gap-fill me-2"></i>WORKSHEET INPUT</h5>
+                        <h6 class="fw-bold text-uppercase tracking-wider text-secondary m-0" style="font-size: 0.8rem; letter-spacing: 0.05em;"><i class="bi bi-grid-3x3-gap-fill me-2"></i>Worksheet Input</h6>
                         
                         <div class="d-flex gap-2 d-print-none flex-wrap">
-                            <button onclick="downloadXLSX()" class="btn btn-sm btn-brutal text-dark" style="background-color: #c7ecc8;">
-                                <i class="bi bi-file-earmark-excel-fill me-1"></i>Unduh .XLSX
+                            <button onclick="downloadXLSX()" class="btn btn-sm btn-brutal btn-laravel-secondary">
+                                <i class="bi bi-file-earmark-excel-fill text-success me-1"></i>Unduh .XLSX
                             </button>
-                            <button onclick="downloadDOCX()" class="btn btn-sm btn-brutal text-dark" style="background-color: #b3c5ff;">
-                                <i class="bi bi-file-earmark-word-fill me-1"></i>Unduh .DOCX
+                            <button onclick="downloadDOCX()" class="btn btn-sm btn-brutal btn-laravel-secondary">
+                                <i class="bi bi-file-earmark-word-fill text-primary me-1"></i>Unduh .DOCX
                             </button>
-                            <button onclick="downloadPDF()" class="btn btn-sm btn-brutal text-dark" style="background-color: #ffb7b2;">
-                                <i class="bi bi-file-earmark-pdf-fill me-1"></i>Unduh .PDF
+                            <button onclick="downloadPDF()" class="btn btn-sm btn-brutal btn-laravel-secondary">
+                                <i class="bi bi-file-earmark-pdf-fill text-danger me-1"></i>Unduh .PDF
                             </button>
                         </div>
 
-                        <div class="d-flex gap-2 d-print-none fw-bold small">
-                            <span class="badge bg-light text-dark border border-1 border-dark p-2">ABSEN 20%</span>
-                            <span class="badge bg-light text-dark border border-1 border-dark p-2">TUGAS 25%</span>
-                            <span class="badge bg-light text-dark border border-1 border-dark p-2">UTS 25%</span>
-                            <span class="badge bg-light text-dark border border-1 border-dark p-2">UAS 30%</span>
+                        <div class="d-flex gap-1 d-print-none fw-semibold" style="font-size: 0.7rem;">
+                            <span class="badge bg-secondary opacity-75 p-2">ABSEN 20%</span>
+                            <span class="badge bg-secondary opacity-75 p-2">TUGAS 25%</span>
+                            <span class="badge bg-secondary opacity-75 p-2">UTS 25%</span>
+                            <span class="badge bg-secondary opacity-75 p-2">UAS 30%</span>
                         </div>
                     </div>
 
-                    <div class="d-none d-print-block mb-4 p-3 bg-light border border-2 border-dark">
-                        <div class="row fw-bold">
+                    <div class="d-none d-print-block mb-4 p-3 bg-light border">
+                        <div class="row fw-semibold small">
                             <div class="col-4">Mata Kuliah: <b id="printMatkul">-</b></div>
                             <div class="col-4 text-center">Kelas: <b id="printKelas">-</b></div>
                             <div class="col-4 text-end">Dosen: <b id="printDosen">-</b></div>
@@ -364,9 +382,9 @@
                                     <th>TUGAS</th>
                                     <th>UTS</th>
                                     <th>UAS</th>
-                                    <th style="background:#fffde6 !important;">N.A</th>
-                                    <th style="background:#fffde6 !important;">GRADE</th>
-                                    <th style="background:#fffde6 !important;">STATUS</th>
+                                    <th style="background:#f9fafb !important;">N.A</th>
+                                    <th style="background:#f9fafb !important;">GRADE</th>
+                                    <th style="background:#f9fafb !important;">STATUS</th>
                                 </tr>
                             </thead>
                             <tbody id="tabel-body-mahasiswa"></tbody>
@@ -388,7 +406,7 @@
             { no: 4, nim: "63250296", nama: "WILDA PEBRIANTY", hadir: 11 },
             { no: 5, nim: "63250302", nama: "SUCI RAHMAWATI", hadir: 11 },
             { no: 6, nim: "63250304", nama: "DINI NURAENI", hadir: 11 },
-            { no: 7, border: 1, nim: "63250465", nama: "DEA ANNISA ABICINTIA", hadir: 11 },
+            { no: 7, nim: "63250465", nama: "DEA ANNISA ABICINTIA", hadir: 11 },
             { no: 8, nim: "63250556", nama: "SARASWATI", hadir: 11 },
             { no: 9, nim: "63250577", nama: "DENEESE KAYLA PUTRI", hadir: 10 },
             { no: 10, nim: "63250594", nama: "SHERLY AFIANSYAH", hadir: 10 },
@@ -417,17 +435,17 @@
                     labels: ['Lulus', 'Wajib Her', 'Gagal'],
                     datasets: [{
                         data: [0, 0, 0],
-                        backgroundColor: ['#d1f4d2', '#ffe3b3', '#ffccd5'],
-                        borderColor: '#2b2b2b',
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderColor: '#ffffff',
                         borderWidth: 2,
-                        hoverOffset: 6
+                        hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    cutout: '72%'
+                    cutout: '75%'
                 }
             });
         }
@@ -465,9 +483,9 @@
                     <td class="border-end"><input type="number" class="form-control text-center input-nilai-tugas" value="0"></td>
                     <td class="border-end"><input type="number" class="form-control text-center input-nilai-uts" value="0"></td>
                     <td class="border-end"><input type="number" class="form-control text-center input-nilai-uas" value="0"></td>
-                    <td class="text-center fw-bold" style="background:#fffdf0;" id="na-${mhs.nim}">0.00</td>
-                    <td class="text-center fw-bold fs-5" style="background:#fffdf0;" id="grade-${mhs.nim}">-</td>
-                    <td class="text-center" style="background:#fffdf0;" id="status-${mhs.nim}"></td>
+                    <td class="text-center fw-bold" style="background:#fafafa;" id="na-${mhs.nim}">0.00</td>
+                    <td class="text-center fw-bold fs-6" style="background:#fafafa;" id="grade-${mhs.nim}">-</td>
+                    <td class="text-center" style="background:#fafafa;" id="status-${mhs.nim}"></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -488,17 +506,17 @@
                 const naFix = nilaiAkhir.toFixed(2);
                 document.getElementById(`na-${mhs.nim}`).innerText = naFix;
 
-                let grade = "E", badge = "", color = "#5c0f1b";
+                let grade = "E", badge = "", color = "#ef4444";
 
-                if (naFix >= 80) { grade = "A"; color = "#2e7d32"; stats.lulus++; 
+                if (naFix >= 80) { grade = "A"; color = "#10b981"; stats.lulus++; 
                     badge = '<span class="status-badge status-lulus">Lulus (A)</span>';
-                } else if (naFix >= 68) { grade = "B"; color = "#2e7d32"; stats.lulus++;
+                } else if (naFix >= 68) { grade = "B"; color = "#10b981"; stats.lulus++;
                     badge = '<span class="status-badge status-lulus">Lulus (B)</span>';
-                } else if (naFix >= 56) { grade = "C"; color = "#1565c0"; stats.lulus++;
+                } else if (naFix >= 56) { grade = "C"; color = "#3b82f6"; stats.lulus++;
                     badge = '<span class="status-badge status-lulus">Lulus (C)</span>';
-                } else if (naFix >= 31) { grade = "D"; color = "#b78103"; stats.her++;
+                } else if (naFix >= 31) { grade = "D"; color = "#f59e0b"; stats.her++;
                     badge = '<span class="status-badge status-her">Wajib Her</span>';
-                } else { grade = "E"; color = "#5c0f1b"; stats.gagal++;
+                } else { grade = "E"; color = "#ef4444"; stats.gagal++;
                     badge = '<span class="status-badge status-gagal">Gagal (E)</span>';
                 }
 
@@ -507,7 +525,7 @@
                 gElem.style.color = color;
 
                 if (mhs.hadir < 9) {
-                    badge += `<div class="text-danger fw-bold mt-1" style="font-size: 9px;">🚫 ABSEN < 75%</div>`;
+                    badge += `<div class="text-danger fw-semibold mt-1" style="font-size: 9px;">🚫 ABSEN < 75%</div>`;
                 }
                 document.getElementById(`status-${mhs.nim}`).innerHTML = badge;
             });
@@ -526,9 +544,6 @@
             document.getElementById('summaryStats').innerText = `TOTAL: ${total} MHS`;
         }
 
-        // ==========================================
-        //  FUNGSI DOWNLOAD (FITUR BARU)
-        // ==========================================
         function getMetadata() {
             return {
                 dosen: document.getElementById('inputDosen').value || 'Belum Diisi',
@@ -569,29 +584,38 @@
 
         function downloadDOCX() {
             const meta = getMetadata();
-            const { Document, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } = docx;
+            const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType } = window.docx;
 
-            const tableRows = [
-                new TableRow({
-                    children: [
-                        "No", "NIM", "Nama Mahasiswa", "Hadir", "Tugas", "UTS", "UAS", "N.A", "Grade"
-                    ].map(h => new TableCell({ children: [new Paragraph({ text: h, bold: true })] }))
+            const headerCells = ["No", "NIM", "Nama Mahasiswa", "Hadir", "Tugas", "UTS", "UAS", "N.A", "Grade"].map(h => 
+                new TableCell({
+                    width: { size: h === "Nama Mahasiswa" ? 35 : 8, type: WidthType.PERCENTAGE },
+                    children: [new Paragraph({ children: [new TextRun({ text: h, bold: true, size: 20 })], alignment: AlignmentType.CENTER })],
+                    shading: { fill: "F9FAFB" }
                 })
-            ];
+            );
+
+            const tableRows = [new TableRow({ children: headerCells })];
 
             currentMahasiswaData.forEach(mhs => {
                 const row = document.getElementById(`na-${mhs.nim}`).parentElement;
-                const nTugas = row.querySelector(".input-nilai-tugas").value;
-                const nUts = row.querySelector(".input-nilai-uts").value;
-                const nUas = row.querySelector(".input-nilai-uas").value;
+                const nTugas = row.querySelector(".input-nilai-tugas").value || "0";
+                const nUts = row.querySelector(".input-nilai-uts").value || "0";
+                const nUas = row.querySelector(".input-nilai-uas").value || "0";
                 const na = document.getElementById(`na-${mhs.nim}`).innerText;
                 const grade = document.getElementById(`grade-${mhs.nim}`).innerText;
 
-                tableRows.push(new TableRow({
-                    children: [
-                        mhs.no.toString(), mhs.nim, mhs.nama, mhs.hadir.toString(), nTugas, nUts, nUas, na, grade
-                    ].map(txt => new TableCell({ children: [new Paragraph({ text: txt })] }))
-                }));
+                const rowCells = [
+                    mhs.no.toString(), mhs.nim, mhs.nama, mhs.hadir.toString(), nTugas, nUts, nUas, na, grade
+                ].map((txt, idx) => 
+                    new TableCell({
+                        width: { size: idx === 2 ? 35 : 8, type: WidthType.PERCENTAGE },
+                        children: [new Paragraph({ 
+                            children: [new TextRun({ text: txt, size: 18 })], 
+                            alignment: idx === 2 ? AlignmentType.LEFT : AlignmentType.CENTER 
+                        })]
+                    })
+                );
+                tableRows.push(new TableRow({ children: rowCells }));
             });
 
             const doc = new Document({
@@ -601,21 +625,25 @@
                         new Paragraph({ children: [new TextRun({ text: "UNIVERSITAS BINA SARANA INFORMATIKA", bold: true, size: 28 })], alignment: AlignmentType.CENTER }),
                         new Paragraph({ children: [new TextRun({ text: "LAPORAN EVALUASI DAN PENILAIAN AKADEMIK", bold: true, size: 22 })], alignment: AlignmentType.CENTER }),
                         new Paragraph({ text: "" }),
-                        new Paragraph({ children: [new TextRun({ text: `Dosen Pengampu : ${meta.dosen}`, bold: true })] }),
-                        new Paragraph({ children: [new TextRun({ text: `Mata Kuliah    : ${meta.matkul}`, bold: true })] }),
-                        new Paragraph({ children: [new TextRun({ text: `Kelas          : ${meta.kelas}`, bold: true })] }),
+                        new Paragraph({ children: [new TextRun({ text: `Dosen Pengampu : ${meta.dosen}`, bold: true, size: 20 })] }),
+                        new Paragraph({ children: [new TextRun({ text: `Mata Kuliah    : ${meta.matkul}`, bold: true, size: 20 })] }),
+                        new Paragraph({ children: [new TextRun({ text: `Kelas          : ${meta.kelas}`, bold: true, size: 20 })] }),
                         new Paragraph({ text: "" }),
                         new Table({ rows: tableRows, width: { size: 100, type: WidthType.PERCENTAGE } })
                     ],
                 }],
             });
 
-            docx.Packer.toBlob(doc).then(blob => {
+            Packer.toBlob(doc).then(blob => {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement("a");
                 a.href = url;
                 a.download = `Nilai_UBSI_Kelas_${meta.kelas.replace(/\s+/g, '_')}.docx`;
                 a.click();
+                URL.revokeObjectURL(url);
+            }).catch(err => {
+                console.error(err);
+                alert("Terjadi kesalahan sistem saat membuat file .docx");
             });
         }
 
@@ -630,7 +658,6 @@
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
             };
             
-            // Mengamankan input nilai agar teksnya ikut tercetak permanen di html2pdf
             document.querySelectorAll('#tabel-penilaian-utama input').forEach(input => {
                 input.setAttribute('value', input.value);
             });
@@ -638,9 +665,6 @@
             html2pdf().set(opt).from(element).save();
         }
 
-        // ==========================================
-        //  LOGIKA UTAMA SISTEM (TETAP SAMA)
-        // ==========================================
         document.getElementById('upload-excel').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
