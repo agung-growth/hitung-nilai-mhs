@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Penilaian Akhir Mahasiswa - UBSI</title>
+    <title>Sistem Penilaian Akademik - UBSI</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -11,116 +11,209 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
+        :root {
+            --bg-main: #f4f6f9;
+            --text-main: #334155;
+            --text-muted: #64748b;
+            --ubsi-blue: #1e3a8a;
+            --ubsi-blue-light: #eff6ff;
+            --border-color: #e2e8f0;
+            
+            /* Soft Academic Status Colors */
+            --soft-green-bg: #e6f4ea;
+            --soft-green-text: #137333;
+            --soft-cyan-bg: #e0f7fa;
+            --soft-cyan-text: #006064;
+            --soft-amber-bg: #fef7e0;
+            --soft-amber-text: #b06000;
+            --soft-orange-bg: #ffebee;
+            --soft-orange-text: #b71c1c;
+        }
+
         body {
-            background-color: #f8f9fa;
-            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            color: #334155;
+            background-color: var(--bg-main);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text-main);
             -webkit-font-smoothing: antialiased;
         }
         
-        /* Tema Warna Navigasi UBSI */
+        /* Navigasi Minimalis & Teduh */
         .navbar-ubsi {
-            background-color: #0d233a;
-            border-bottom: 4px solid #ffc107;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
         }
         .navbar-brand-title {
             font-weight: 700;
-            letter-spacing: 0.05em;
-            font-size: 1.1rem;
+            color: var(--ubsi-blue);
+            font-size: 1.05rem;
+            letter-spacing: 0.02em;
         }
         .navbar-sub {
             font-size: 0.75rem;
-            color: #94a3b8;
+            color: var(--text-muted);
             display: block;
-            margin-top: -2px;
+        }
+        .badge-ta {
+            background-color: var(--ubsi-blue-light);
+            color: var(--ubsi-blue);
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid #d0e2ff;
         }
         
-        /* Gaya Gradasi Kartu Bobot Nilai */
+        /* Kartu Ringkasan Grid yang Fresh */
         .card-weight {
-            border: none;
-            border-radius: 0.75rem;
-            color: #ffffff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            background-color: #ffffff;
+            padding: 1.25rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
         }
-        .bg-grad-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-        .bg-grad-cyan { background: linear-gradient(135deg, #0891b2, #0e7490); }
-        .bg-grad-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
-        .bg-grad-emerald { background: linear-gradient(135deg, #059669, #047857); }
-        
+        .card-weight:hover {
+            transform: translateY(-2px);
+        }
         .weight-title {
-            document-size: 0.75rem;
-            font-weight: 500;
+            font-size: 0.75rem;
+            font-weight: 600;
             text-transform: uppercase;
+            color: var(--text-muted);
             letter-spacing: 0.05em;
-            opacity: 0.9;
         }
-        .weight-icon {
-            font-size: 2.25rem;
-            opacity: 0.4;
+        .weight-number {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--ubsi-blue);
+            margin-top: 0.25rem;
         }
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .icon-blue { background-color: #e0f2fe; color: #0369a1; }
+        .icon-cyan { background-color: #ecfeff; color: #0e7490; }
+        .icon-amber { background-color: #fef3c7; color: #b45309; }
+        .icon-emerald { background-color: #dcfce7; color: #047857; }
 
-        /* Control Panel */
+        /* Panel Kontrol & Aksi */
         .control-panel {
             background-color: #ffffff;
-            border-radius: 0.75rem;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
         .control-title {
-            font-size: 1.125rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: #334155;
+            color: #1e293b;
         }
         .control-sub {
-            font-size: 0.75rem;
-            color: #64748b;
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
-        /* Tombol Custom Kustom */
+        /* Tombol Modern Ramah Mata */
         .btn-import-custom {
             background-color: #f0fdf4;
             color: #166534;
             border: 1px solid #bbf7d0;
             font-weight: 600;
-            font-size: 0.75rem;
-            padding: 0.375rem 0.75rem;
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
         }
         .btn-import-custom:hover {
             background-color: #dcfce7;
+            border-color: #86efac;
+        }
+        .btn-action-primary {
+            background-color: var(--ubsi-blue);
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            transition: background-color 0.2s;
+        }
+        .btn-action-primary:hover {
+            background-color: #1e40af;
         }
 
-        /* Kustomisasi Tabel */
+        /* Desain Tabel Bersih & Nyaman Dilihat */
         .table-container {
             background-color: #ffffff;
-            border-radius: 0.75rem;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
-        .table-custom-row:hover {
+        .table {
+            margin-bottom: 0;
+        }
+        .table th {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            background-color: #f8fafc !important;
+            color: #475569 !important;
+            padding: 12px 8px !important;
+            border-bottom: 2px solid var(--border-color) !important;
+        }
+        .table td {
+            padding: 14px 8px !important;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .table-custom-row:hover td {
             background-color: #f8fafc !important;
         }
-        .text-grade {
-            font-weight: 900;
-            font-size: 1.125rem;
+        
+        /* Elemen Input Angka yang Halus */
+        .input-nilai-custom {
+            max-width: 80px;
+            margin: 0 auto;
+            text-align: center;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.85rem;
+            background-color: #f8fafc;
+            transition: all 0.2s;
+        }
+        .input-nilai-custom:focus {
+            background-color: #ffffff;
+            border-color: #93c5fd;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
         }
 
-        /* Custom Badges */
-        .badge-custom {
+        /* Desain Badges Lembut (Anti-Perih) */
+        .badge-soft {
             display: inline-flex;
             align-items: center;
-            padding: 0.125rem 0.5rem;
-            border-radius: 9999px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
             font-size: 0.75rem;
             font-weight: 600;
         }
-        .badge-lulus { background-color: #dcfce7; color: #166534; }
-        .badge-her { background-color: #fef3c7; color: #78350f; }
-        .badge-gagal { background-color: #fee2e2; color: #991b1b; }
+        .badge-soft-lulus { background-color: var(--soft-green-bg); color: var(--soft-green-text); }
+        .badge-soft-her { background-color: var(--soft-amber-bg); color: var(--soft-amber-text); }
+        .badge-soft-gagal { background-color: var(--soft-orange-bg); color: var(--soft-orange-text); }
 
-        /* CSS MEDIA PRINT UNTUK OPTIMALISASI CETAK PDF */
+        /* CSS MEDIA PRINT */
         @media print {
             body {
                 background-color: #ffffff !important;
@@ -143,78 +236,77 @@
                 padding: 6px !important;
                 font-size: 11px !important;
             }
-            input[type="number"] {
+            .input-nilai-custom {
                 border: none !important;
                 background: transparent !important;
                 box-shadow: none !important;
                 width: 100% !important;
-                text-align: center !important;
             }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar navbar-dark navbar-ubsi py-2 sticky-top no-print">
+    <nav class="navbar navbar-light navbar-ubsi py-2 sticky-top no-print">
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
-            <a class="d-flex align-items-center text-decoration-none text-white" href="#">
-                <div class="p-2 bg-dark bg-opacity-25 rounded-3 me-3">
-                    <i class="bi bi-mortarboard-fill text-warning fs-4"></i>
+            <a class="d-flex align-items-center text-decoration-none" href="#">
+                <div class="p-2 bg-light rounded-3 me-3 border border-light-subtle">
+                    <i class="bi bi-mortarboard-fill text-primary fs-4"></i>
                 </div>
                 <div>
                     <span class="navbar-brand-title d-block">UNIVERSITAS BINA SARANA INFORMATIKA</span>
-                    <span class="navbar-sub">Sistem Informasi Penilaian Nilai Akhir v26.1</span>
+                    <span class="navbar-sub">Sistem Informasi Penilaian Nilai Akhir v26.2</span>
                 </div>
             </a>
-            <div class="text-end text-white text-opacity-75 fs-7">
-                <span class="bg-dark bg-opacity-50 px-3 py-2 rounded-pill border border-secondary border-opacity-50" style="font-size: 0.85rem;">TA. 2024/2025</span>
+            <div class="text-end">
+                <span class="badge badge-ta px-3 py-2 rounded-3">TA. 2024/2025</span>
             </div>
         </div>
     </nav>
 
     <div class="d-none d-print-block text-center mb-4 border-b border-2 border-dark pb-3">
-        <h4 class="fw-bold text-uppercase tracking-wider">Universitas Bina Sarana Informatika</h4>
+        <h4 class="fw-bold text-uppercase">Universitas Bina Sarana Informatika</h4>
         <h5 class="fw-semibold small">Lembar Hasil Evaluasi Nilai Akhir Mahasiswa</h5>
-        <p class="text-secondary style" style="font-size: 11px;">Tahun Academic 2024/2025 | Sistem Koreksi Otomatis</p>
+        <p class="text-secondary style" style="font-size: 11px;">Tahun Akademik 2024/2025 | Sistem Koreksi Otomatis</p>
     </div>
 
     <div class="container-fluid px-4 py-4">
         
         <div class="row g-3 mb-4">
             <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card-weight bg-grad-blue p-3 d-flex justify-content-between align-items-center">
+                <div class="card-weight d-flex justify-content-between align-items-center">
                     <div>
                         <p class="weight-title mb-0">Bobot Absensi</p>
-                        <h3 class="fw-bold mt-1 mb-0">20%</h3>
+                        <h3 class="weight-number mb-0">20%</h3>
                     </div>
-                    <i class="bi bi-calendar-check weight-icon"></i>
+                    <div class="icon-box icon-blue"><i class="bi bi-calendar-check"></i></div>
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card-weight bg-grad-cyan p-3 d-flex justify-content-between align-items-center">
+                <div class="card-weight d-flex justify-content-between align-items-center">
                     <div>
                         <p class="weight-title mb-0">Bobot Tugas</p>
-                        <h3 class="fw-bold mt-1 mb-0">25%</h3>
+                        <h3 class="weight-number mb-0">25%</h3>
                     </div>
-                    <i class="bi bi-journal-text weight-icon"></i>
+                    <div class="icon-box icon-cyan"><i class="bi bi-journal-text"></i></div>
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card-weight bg-grad-amber p-3 d-flex justify-content-between align-items-center">
+                <div class="card-weight d-flex justify-content-between align-items-center">
                     <div>
                         <p class="weight-title mb-0">Bobot UTS</p>
-                        <h3 class="fw-bold mt-1 mb-0">25%</h3>
+                        <h3 class="weight-number mb-0">25%</h3>
                     </div>
-                    <i class="bi bi-file-earmark-spreadsheet weight-icon"></i>
+                    <div class="icon-box icon-amber"><i class="bi bi-file-earmark-spreadsheet"></i></div>
                 </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-3">
-                <div class="card-weight bg-grad-emerald p-3 d-flex justify-content-between align-items-center">
+                <div class="card-weight d-flex justify-content-between align-items-center">
                     <div>
                         <p class="weight-title mb-0">Bobot UAS</p>
-                        <h3 class="fw-bold mt-1 mb-0">30%</h3>
+                        <h3 class="weight-number mb-0">30%</h3>
                     </div>
-                    <i class="bi bi-file-check weight-icon"></i>
+                    <div class="icon-box icon-emerald"><i class="bi bi-file-check"></i></div>
                 </div>
             </div>
         </div>
@@ -222,21 +314,21 @@
         <div class="control-panel p-3 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3 no-print">
             <div>
                 <h2 class="control-title mb-0">
-                    <i class="bi bi-layers-half text-primary me-2"></i> Lembar Kerja Evaluasi Nilai Akhir Kelas
+                    <i class="bi bi-layers-half text-primary me-2"></i> Lembar Kerja Evaluasi Nilai Kelas
                 </h2>
                 <p class="control-sub mb-0">Nilai akhir otomatis terhitung saat angka Tugas/UTS/UAS dimodifikasi.</p>
             </div>
             <div class="d-flex flex-wrap align-items-center gap-2">
                 <label class="btn-import-custom mb-0">
-                    <i class="bi bi-file-earmark-arrow-up-fill text-success me-1"></i> Import CSV / Excel
+                    <i class="bi bi-file-earmark-arrow-up text-success"></i> Import CSV / Excel
                     <input type="file" id="upload-excel" accept=".csv, .xlsx, .xls" class="d-none">
                 </label>
                 
-                <button onclick="window.print()" class="btn btn-primary btn-sm px-3 rounded-2 fw-semibold" style="font-size: 0.75rem;">
+                <button onclick="window.print()" class="btn-action-primary">
                     <i class="bi bi-printer-fill me-1"></i> Cetak PDF Hasil
                 </button>
                 
-                <button onclick="isiNilaiDefault()" class="btn btn-outline-secondary btn-sm px-3 rounded-2 fw-semibold" style="font-size: 0.75rem;">
+                <button onclick="isiNilaiDefault()" class="btn btn-light btn-sm px-3 rounded-2 fw-semibold border text-secondary" style="font-size: 0.8rem; padding: 0.5rem 1rem;">
                     <i class="bi bi-lightning-fill me-1 text-warning"></i> Set Nilai Sampel
                 </button>
             </div>
@@ -245,29 +337,29 @@
         <div class="table-container overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 text-sm">
-                    <thead class="table-dark text-center" style="border-bottom: 2px solid #334155;">
+                    <thead class="text-center">
                         <tr>
-                            <th rowspan="2" class="align-middle text-white bg-dark" style="width: 50px;">#</th>
-                            <th rowspan="2" class="align-middle text-white bg-dark" style="width: 100px;">NIM</th>
-                            <th rowspan="2" class="align-middle text-start text-white bg-dark" style="width: 250px;">Nama Lengkap Mahasiswa</th>
-                            <th colspan="2" class="text-white-50 border-start border-end border-secondary py-2" style="background-color: #1e293b; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">Absensi (20%)</th>
-                            <th class="text-white-50 py-2" style="background-color: #0f172a; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;" style="width: 110px;">Tugas (25%)</th>
-                            <th class="text-white-50 py-2" style="background-color: #0f172a; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;" style="width: 110px;">UTS (25%)</th>
-                            <th class="text-white-50 py-2" style="background-color: #0f172a; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;" style="width: 110px;">UAS (30%)</th>
-                            <th colspan="3" class="text-info border-start border-secondary py-2" style="background-color: #091e3a; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">Hasil Akhir Evaluasi</th>
+                            <th rowspan="2" class="align-middle border-end" style="width: 50px;">#</th>
+                            <th rowspan="2" class="align-middle border-end" style="width: 100px;">NIM</th>
+                            <th rowspan="2" class="align-middle text-start border-end" style="width: 250px;">Nama Lengkap Mahasiswa</th>
+                            <th colspan="2" class="border-end py-2" style="background-color: #f1f5f9 !important;">Absensi (20%)</th>
+                            <th class="border-end py-2" style="width: 110px;">Tugas (25%)</th>
+                            <th class="border-end py-2" style="width: 110px;">UTS (25%)</th>
+                            <th class="border-end py-2" style="width: 110px;">UAS (30%)</th>
+                            <th colspan="3" class="py-2" style="background-color: var(--ubsi-blue-light) !important; color: var(--ubsi-blue) !important;">Hasil Akhir Evaluasi</th>
                         </tr>
                         <tr>
-                            <th class="text-white border-start border-secondary py-1" style="background-color: #1e293b; font-size: 0.75rem;"><i class="bi bi-check-all text-success"></i> Hadir</th>
-                            <th class="text-white border-end border-secondary py-1" style="background-color: #1e293b; font-size: 0.75rem;">Skor</th>
-                            <th class="text-white-50 py-1" style="background-color: #0f172a; font-size: 0.75rem;">Input (0-100)</th>
-                            <th class="text-white-50 py-1" style="background-color: #0f172a; font-size: 0.75rem;">Input (0-100)</th>
-                            <th class="text-white-50 py-1" style="background-color: #0f172a; font-size: 0.75rem;">Input (0-100)</th>
-                            <th class="text-info py-1" style="background-color: #091e3a; font-size: 0.75rem;">Angka</th>
-                            <th class="text-info py-1" style="background-color: #091e3a; font-size: 0.75rem;">Grade</th>
-                            <th class="text-info py-1" style="background-color: #091e3a; font-size: 0.75rem;">Status / Syarat</th>
+                            <th class="py-1 border-end" style="background-color: #f8fafc !important; font-size: 0.75rem;">Hadir</th>
+                            <th class="py-1 border-end" style="background-color: #f8fafc !important; font-size: 0.75rem;">Skor</th>
+                            <th class="py-1 border-end" style="font-size: 0.75rem; color: var(--text-muted);">Skor (0-100)</th>
+                            <th class="py-1 border-end" style="font-size: 0.75rem; color: var(--text-muted);">Skor (0-100)</th>
+                            <th class="py-1 border-end" style="font-size: 0.75rem; color: var(--text-muted);">Skor (0-100)</th>
+                            <th class="py-1 border-end" style="background-color: var(--ubsi-blue-light) !important; font-size: 0.75rem; font-weight: bold;">Angka</th>
+                            <th class="py-1 border-end" style="background-color: var(--ubsi-blue-light) !important; font-size: 0.75rem; font-weight: bold;">Grade</th>
+                            <th class="py-1" style="background-color: var(--ubsi-blue-light) !important; font-size: 0.75rem; font-weight: bold;">Status</th>
                         </tr>
                     </thead>
-                    <tbody id="tabel-body-mahasiswa" class="table-group-divider">
+                    <tbody id="tabel-body-mahasiswa">
                         </tbody>
                 </table>
             </div>
@@ -314,23 +406,23 @@
                 const tr = document.createElement("tr");
                 tr.className = "table-custom-row";
                 tr.innerHTML = `
-                    <td class="text-center fw-bold text-secondary py-3">${mhs.no}</td>
-                    <td class="text-center font-mono text-dark text-opacity-75">${mhs.nim}</td>
-                    <td class="fw-semibold text-dark text-start">${mhs.nama}</td>
-                    <td class="text-center fw-bold text-primary" style="background-color: rgba(219, 234, 254, 0.3);">${mhs.hadir}</td>
-                    <td class="text-center fw-medium text-secondary" style="background-color: rgba(219, 234, 254, 0.3);" id="skor-absen-${mhs.nim}">${skorAbsen}</td>
-                    <td>
-                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm fw-semibold border-secondary-subtle text-dark py-1 px-2 small input-nilai-tugas" data-nim="${mhs.nim}" value="0">
+                    <td class="text-center fw-bold text-secondary border-end">${mhs.no}</td>
+                    <td class="text-center border-end font-mono text-secondary small">${mhs.nim}</td>
+                    <td class="fw-semibold text-start border-end">${mhs.nama}</td>
+                    <td class="text-center fw-bold text-primary">${mhs.hadir}</td>
+                    <td class="text-center fw-medium text-secondary border-end" id="skor-absen-${mhs.nim}">${skorAbsen}</td>
+                    <td class="border-end">
+                        <input type="number" min="0" max="100" class="input-nilai-custom input-nilai-tugas" data-nim="${mhs.nim}" value="0">
                     </td>
-                    <td>
-                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm fw-semibold border-secondary-subtle text-dark py-1 px-2 small input-nilai-uts" data-nim="${mhs.nim}" value="0">
+                    <td class="border-end">
+                        <input type="number" min="0" max="100" class="input-nilai-custom input-nilai-uts" data-nim="${mhs.nim}" value="0">
                     </td>
-                    <td>
-                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm fw-semibold border-secondary-subtle text-dark py-1 px-2 small input-nilai-uas" data-nim="${mhs.nim}" value="0">
+                    <td class="border-end">
+                        <input type="number" min="0" max="100" class="input-nilai-custom input-nilai-uas" data-nim="${mhs.nim}" value="0">
                     </td>
-                    <td class="text-center fw-bold text-dark bg-light" id="na-${mhs.nim}">0.00</td>
-                    <td class="text-center text-grade" id="grade-${mhs.nim}">-</td>
-                    <td class="text-center" id="status-${mhs.nim}" style="font-size: 0.75rem;"></td>
+                    <td class="text-center fw-bold border-end" id="na-${mhs.nim}" style="background-color: #fafafa;">0.00</td>
+                    <td class="text-center fw-bold fs-6 border-end" id="grade-${mhs.nim}">-</td>
+                    <td class="text-center" id="status-${mhs.nim}"></td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -353,24 +445,24 @@
                 document.getElementById(`na-${mhs.nim}`).innerText = naFix;
 
                 let grade = "E";
-                let styleColor = "#dc3545"; // Bootstrap Red
+                let styleColor = "#b71c1c";
                 let badgeStatus = "";
 
                 if (naFix >= 80) {
-                    grade = "A"; styleColor = "#198754"; // Green
-                    badgeStatus = '<span class="badge-custom badge-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
+                    grade = "A"; styleColor = "var(--soft-green-text)";
+                    badgeStatus = '<span class="badge-soft badge-soft-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
                 } else if (naFix >= 68) {
-                    grade = "B"; styleColor = "#0dcaf0"; // Cyan/Teal
-                    badgeStatus = '<span class="badge-custom badge-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
+                    grade = "B"; styleColor = "var(--soft-cyan-text)";
+                    badgeStatus = '<span class="badge-soft badge-soft-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
                 } else if (naFix >= 56) {
-                    grade = "C"; styleColor = "#ffc107"; // Amber
-                    badgeStatus = '<span class="badge-custom badge-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
+                    grade = "C"; styleColor = "var(--soft-amber-text)";
+                    badgeStatus = '<span class="badge-soft badge-soft-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
                 } else if (naFix >= 31) {
-                    grade = "D"; styleColor = "#fd7e14"; // Orange
-                    badgeStatus = '<span class="badge-custom badge-her"><i class="bi bi-exclamation-triangle-fill me-1"></i>Wajib Her</span>';
+                    grade = "D"; styleColor = "#c2410c";
+                    badgeStatus = '<span class="badge-soft badge-soft-her"><i class="bi bi-exclamation-triangle-fill me-1"></i>Wajib Her</span>';
                 } else {
-                    grade = "E"; styleColor = "#dc3545"; // Red
-                    badgeStatus = '<span class="badge-custom badge-gagal"><i class="bi bi-x-circle-fill me-1"></i>Gagal</span>';
+                    grade = "E"; styleColor = "var(--soft-orange-text)";
+                    badgeStatus = '<span class="badge-soft badge-soft-gagal"><i class="bi bi-x-circle-fill me-1"></i>Gagal</span>';
                 }
 
                 const gradeElem = document.getElementById(`grade-${mhs.nim}`);
@@ -378,7 +470,7 @@
                 gradeElem.style.color = styleColor;
 
                 if (mhs.hadir < 9) {
-                    badgeStatus += `<div class="text-danger fw-bold mt-1 tracking-tight" style="font-size: 10px;"><i class="bi bi-shield-slash"></i> Kehadiran ${Math.round((mhs.hadir/12)*100)}% (&lt;75%)</div>`;
+                    badgeStatus += `<div class="text-danger fw-bold mt-1" style="font-size: 10px;"><i class="bi bi-shield-slash"></i> Kehadiran ${Math.round((mhs.hadir/12)*100)}% (&lt;75%)</div>`;
                 }
 
                 document.getElementById(`status-${mhs.nim}`).innerHTML = badgeStatus;
