@@ -3,29 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Penilaian Akademik - UBSI</title>
+    <title>Sistem Penilaian Akhir Mahasiswa - UBSI</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        ubsiDark: '#0d233a',
-                        ubsiGold: '#ffc107',
-                    }
-                }
-            }
-        }
-    </script>
-
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <style>
-        /* CSS KHUSUS UNTUK OPTIMALISASI CETAK PDF */
+        body {
+            background-color: #f8f9fa;
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #334155;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Tema Warna Navigasi UBSI */
+        .navbar-ubsi {
+            background-color: #0d233a;
+            border-bottom: 4px solid #ffc107;
+        }
+        .navbar-brand-title {
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            font-size: 1.1rem;
+        }
+        .navbar-sub {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            display: block;
+            margin-top: -2px;
+        }
+        
+        /* Gaya Gradasi Kartu Bobot Nilai */
+        .card-weight {
+            border: none;
+            border-radius: 0.75rem;
+            color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .bg-grad-blue { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .bg-grad-cyan { background: linear-gradient(135deg, #0891b2, #0e7490); }
+        .bg-grad-amber { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .bg-grad-emerald { background: linear-gradient(135deg, #059669, #047857); }
+        
+        .weight-title {
+            document-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.9;
+        }
+        .weight-icon {
+            font-size: 2.25rem;
+            opacity: 0.4;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .control-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #334155;
+        }
+        .control-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        /* Tombol Custom Kustom */
+        .btn-import-custom {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-import-custom:hover {
+            background-color: #dcfce7;
+        }
+
+        /* Kustomisasi Tabel */
+        .table-container {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .table-custom-row:hover {
+            background-color: #f8fafc !important;
+        }
+        .text-grade {
+            font-weight: 900;
+            font-size: 1.125rem;
+        }
+
+        /* Custom Badges */
+        .badge-custom {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.125rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-lulus { background-color: #dcfce7; color: #166534; }
+        .badge-her { background-color: #fef3c7; color: #78350f; }
+        .badge-gagal { background-color: #fee2e2; color: #991b1b; }
+
+        /* CSS MEDIA PRINT UNTUK OPTIMALISASI CETAK PDF */
         @media print {
             body {
                 background-color: #ffffff !important;
@@ -34,9 +129,10 @@
             .no-print {
                 display: none !important;
             }
-            .card {
+            .card-weight, .control-panel, .table-container {
                 border: none !important;
                 box-shadow: none !important;
+                background: transparent !important;
             }
             table {
                 width: 100% !important;
@@ -57,115 +153,121 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 antialiased">
+<body>
 
-    <nav class="bg-ubsiDark shadow-md border-b-4 border-amber-500 py-3 sticky top-0 z-50 no-print">
-        <div class="container-fluid px-6 flex justify-between items-center">
-            <a class="flex items-center no-underline text-white gap-3" href="#">
-                <div class="p-2 bg-slate-800/50 rounded-lg">
-                    <i class="bi bi-mortarboard-fill text-2xl text-amber-400"></i>
+    <nav class="navbar navbar-dark navbar-ubsi py-2 sticky-top no-print">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+            <a class="d-flex align-items-center text-decoration-none text-white" href="#">
+                <div class="p-2 bg-dark bg-opacity-25 rounded-3 me-3">
+                    <i class="bi bi-mortarboard-fill text-warning fs-4"></i>
                 </div>
                 <div>
-                    <span class="block font-bold tracking-wider text-base md:text-lg">UNIVERSITAS BINA SARANA INFORMATIKA</span>
-                    <span class="text-xs text-slate-400 block -mt-1">Sistem Informasi Penilaian Nilai Akhir v26.1</span>
+                    <span class="navbar-brand-title d-block">UNIVERSITAS BINA SARANA INFORMATIKA</span>
+                    <span class="navbar-sub">Sistem Informasi Penilaian Nilai Akhir v26.1</span>
                 </div>
             </a>
-            <div class="text-right text-xs md:text-sm text-slate-300">
-                <span class="bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700">TA. 2024/2025</span>
+            <div class="text-end text-white text-opacity-75 fs-7">
+                <span class="bg-dark bg-opacity-50 px-3 py-2 rounded-pill border border-secondary border-opacity-50" style="font-size: 0.85rem;">TA. 2024/2025</span>
             </div>
         </div>
     </nav>
 
-    <div class="hidden print:block text-center mb-6 border-b-2 border-slate-800 pb-3">
-        <h4 class="font-bold text-lg uppercase tracking-wider">Universitas Bina Sarana Informatika</h4>
-        <h5 class="font-semibold text-sm">Lembar Hasil Evaluasi Nilai Akhir Mahasiswa</h5>
-        <p class="text-xs text-slate-500 mt-1">Tahun Akademik 2024/2025 | Sistem Koreksi Otomatis</p>
+    <div class="d-none d-print-block text-center mb-4 border-b border-2 border-dark pb-3">
+        <h4 class="fw-bold text-uppercase tracking-wider">Universitas Bina Sarana Informatika</h4>
+        <h5 class="fw-semibold small">Lembar Hasil Evaluasi Nilai Akhir Mahasiswa</h5>
+        <p class="text-secondary style" style="font-size: 11px;">Tahun Academic 2024/2025 | Sistem Koreksi Otomatis</p>
     </div>
 
-    <div class="container-fluid px-6 py-6">
+    <div class="container-fluid px-4 py-4">
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-4 text-white shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-blue-100 font-medium tracking-wide uppercase">Bobot Absensi</p>
-                    <h3 class="text-2xl font-bold mt-1">20%</h3>
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card-weight bg-grad-blue p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="weight-title mb-0">Bobot Absensi</p>
+                        <h3 class="fw-bold mt-1 mb-0">20%</h3>
+                    </div>
+                    <i class="bi bi-calendar-check weight-icon"></i>
                 </div>
-                <i class="bi bi-calendar-check text-4xl text-blue-200/40"></i>
             </div>
-            <div class="bg-gradient-to-br from-cyan-600 to-cyan-700 rounded-xl p-4 text-white shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-cyan-100 font-medium tracking-wide uppercase">Bobot Tugas</p>
-                    <h3 class="text-2xl font-bold mt-1">25%</h3>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card-weight bg-grad-cyan p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="weight-title mb-0">Bobot Tugas</p>
+                        <h3 class="fw-bold mt-1 mb-0">25%</h3>
+                    </div>
+                    <i class="bi bi-journal-text weight-icon"></i>
                 </div>
-                <i class="bi bi-journal-text text-4xl text-cyan-200/40"></i>
             </div>
-            <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl p-4 text-white shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-amber-100 font-medium tracking-wide uppercase">Bobot UTS</p>
-                    <h3 class="text-2xl font-bold mt-1">25%</h3>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card-weight bg-grad-amber p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="weight-title mb-0">Bobot UTS</p>
+                        <h3 class="fw-bold mt-1 mb-0">25%</h3>
+                    </div>
+                    <i class="bi bi-file-earmark-spreadsheet weight-icon"></i>
                 </div>
-                <i class="bi bi-file-earmark-spreadsheet text-4xl text-amber-100/40"></i>
             </div>
-            <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl p-4 text-white shadow-sm flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-emerald-100 font-medium tracking-wide uppercase">Bobot UAS</p>
-                    <h3 class="text-2xl font-bold mt-1">30%</h3>
+            <div class="col-12 col-sm-6 col-lg-3">
+                <div class="card-weight bg-grad-emerald p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="weight-title mb-0">Bobot UAS</p>
+                        <h3 class="fw-bold mt-1 mb-0">30%</h3>
+                    </div>
+                    <i class="bi bi-file-check weight-icon"></i>
                 </div>
-                <i class="bi bi-file-check text-4xl text-emerald-200/40"></i>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-200 mb-6 flex flex-wrap justify-between items-center gap-4 no-print">
-            <div class="flex items-center gap-3">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-700 flex items-center gap-2">
-                        <i class="bi bi-layers-half text-blue-600"></i> Lembar Kerja Evaluasi Nilai Akhir Kelas
-                    </h2>
-                    <p class="text-xs text-slate-500">Nilai akhir otomatis terhitung saat angka Tugas/UTS/UAS dimodifikasi.</p>
-                </div>
+        <div class="control-panel p-3 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3 no-print">
+            <div>
+                <h2 class="control-title mb-0">
+                    <i class="bi bi-layers-half text-primary me-2"></i> Lembar Kerja Evaluasi Nilai Akhir Kelas
+                </h2>
+                <p class="control-sub mb-0">Nilai akhir otomatis terhitung saat angka Tugas/UTS/UAS dimodifikasi.</p>
             </div>
-            <div class="flex flex-wrap items-center gap-2">
-                <label class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer hover:bg-emerald-100 transition-colors">
-                    <i class="bi bi-file-earmark-excel-fill text-emerald-600"></i> Import Excel (.xlsx)
-                    <input type="file" id="upload-excel" accept=".xlsx, .xls" class="hidden">
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <label class="btn-import-custom mb-0">
+                    <i class="bi bi-file-earmark-arrow-up-fill text-success me-1"></i> Import CSV / Excel
+                    <input type="file" id="upload-excel" accept=".csv, .xlsx, .xls" class="d-none">
                 </label>
                 
-                <button onclick="window.print()" class="flex items-center gap-1.5 bg-blue-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-blue-700 transition-colors">
-                    <i class="bi bi-printer-fill"></i> Cetak PDF Hasil
+                <button onclick="window.print()" class="btn btn-primary btn-sm px-3 rounded-2 fw-semibold" style="font-size: 0.75rem;">
+                    <i class="bi bi-printer-fill me-1"></i> Cetak PDF Hasil
                 </button>
                 
-                <button onclick="isiNilaiDefault()" class="btn btn-outline-secondary btn-sm rounded-lg text-xs font-semibold py-1.5">
-                    <i class="bi bi-lightning-fill me-1 text-amber-500"></i> Set Nilai Sampel
+                <button onclick="isiNilaiDefault()" class="btn btn-outline-secondary btn-sm px-3 rounded-2 fw-semibold" style="font-size: 0.75rem;">
+                    <i class="bi bi-lightning-fill me-1 text-warning"></i> Set Nilai Sampel
                 </button>
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="table-container overflow-hidden">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 text-sm">
-                    <thead class="bg-slate-900 text-white text-center border-b-2 border-slate-700">
+                    <thead class="table-dark text-center" style="border-bottom: 2px solid #334155;">
                         <tr>
-                            <th rowspan="2" class="align-middle text-slate-200 bg-slate-900" style="width: 50px;">#</th>
-                            <th rowspan="2" class="align-middle text-slate-200 bg-slate-900" style="width: 100px;">NIM</th>
-                            <th rowspan="2" class="align-middle text-left text-slate-200 bg-slate-900" style="width: 250px;">Nama Lengkap Mahasiswa</th>
-                            <th colspan="2" class="bg-slate-800 text-slate-300 border-x border-slate-700 py-1.5 text-xs tracking-wider uppercase">Absensi (20%)</th>
-                            <th class="bg-slate-900 text-slate-300 py-1.5 text-xs tracking-wider uppercase" style="width: 110px;">Tugas (25%)</th>
-                            <th class="bg-slate-900 text-slate-300 py-1.5 text-xs tracking-wider uppercase" style="width: 110px;">UTS (25%)</th>
-                            <th class="bg-slate-900 text-slate-300 py-1.5 text-xs tracking-wider uppercase" style="width: 110px;">UAS (30%)</th>
-                            <th colspan="3" class="bg-blue-950 text-blue-200 border-l border-slate-700 py-1.5 text-xs tracking-wider uppercase">Hasil Akhir Evaluasi</th>
+                            <th rowspan="2" class="align-middle text-white bg-dark" style="width: 50px;">#</th>
+                            <th rowspan="2" class="align-middle text-white bg-dark" style="width: 100px;">NIM</th>
+                            <th rowspan="2" class="align-middle text-start text-white bg-dark" style="width: 250px;">Nama Lengkap Mahasiswa</th>
+                            <th colspan="2" class="text-white-50 border-start border-end border-secondary py-2" style="background-color: #1e293b; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">Absensi (20%)</th>
+                            <th class="text-white-50 py-2" style="background-color: #0f172a; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;" style="width: 110px;">Tugas (25%)</th>
+                            <th class="text-white-50 py-2" style="background-color: #0f172a; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;" style="width: 110px;">UTS (25%)</th>
+                            <th class="text-white-50 py-2" style="background-color: #0f172a; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;" style="width: 110px;">UAS (30%)</th>
+                            <th colspan="3" class="text-info border-start border-secondary py-2" style="background-color: #091e3a; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">Hasil Akhir Evaluasi</th>
                         </tr>
                         <tr>
-                            <th class="bg-slate-800 text-slate-300 border-l border-slate-700 py-1 text-xs"><i class="bi bi-check-all text-emerald-400"></i> Hadir</th>
-                            <th class="bg-slate-800 text-slate-300 border-r border-slate-700 py-1 text-xs">Skor</th>
-                            <th class="bg-slate-900 text-slate-400 py-1 text-xs">Input (0-100)</th>
-                            <th class="bg-slate-900 text-slate-400 py-1 text-xs">Input (0-100)</th>
-                            <th class="bg-slate-900 text-slate-400 py-1 text-xs">Input (0-100)</th>
-                            <th class="bg-blue-950 text-blue-300 py-1 text-xs">Angka</th>
-                            <th class="bg-blue-950 text-blue-300 py-1 text-xs">Grade</th>
-                            <th class="bg-blue-950 text-blue-300 py-1 text-xs">Status / Syarat</th>
+                            <th class="text-white border-start border-secondary py-1" style="background-color: #1e293b; font-size: 0.75rem;"><i class="bi bi-check-all text-success"></i> Hadir</th>
+                            <th class="text-white border-end border-secondary py-1" style="background-color: #1e293b; font-size: 0.75rem;">Skor</th>
+                            <th class="text-white-50 py-1" style="background-color: #0f172a; font-size: 0.75rem;">Input (0-100)</th>
+                            <th class="text-white-50 py-1" style="background-color: #0f172a; font-size: 0.75rem;">Input (0-100)</th>
+                            <th class="text-white-50 py-1" style="background-color: #0f172a; font-size: 0.75rem;">Input (0-100)</th>
+                            <th class="text-info py-1" style="background-color: #091e3a; font-size: 0.75rem;">Angka</th>
+                            <th class="text-info py-1" style="background-color: #091e3a; font-size: 0.75rem;">Grade</th>
+                            <th class="text-info py-1" style="background-color: #091e3a; font-size: 0.75rem;">Status / Syarat</th>
                         </tr>
                     </thead>
-                    <tbody id="tabel-body-mahasiswa" class="divide-y divide-slate-100">
+                    <tbody id="tabel-body-mahasiswa" class="table-group-divider">
                         </tbody>
                 </table>
             </div>
@@ -174,7 +276,7 @@
     </div>
 
     <script>
-        // Dataset Utama Berdasarkan Sampel Berkas yang Anda Berikan
+        // Dataset Utama Berdasarkan Sampel Berkas
         let currentMahasiswaData = [
             { no: 1, nim: "63250121", nama: "NENI RAHAYU", hadir: 11 },
             { no: 2, nim: "63250241", nama: "ALIFA KHAIRUNNISA", hadir: 10 },
@@ -205,37 +307,37 @@
         // Fungsi Render Baris Tabel Mahasiswa ke DOM
         function renderTabel() {
             const tbody = document.getElementById("tabel-body-mahasiswa");
-            tbody.innerHTML = ""; // Bersihkan data lama jika ada proses import berkas baru
+            tbody.innerHTML = "";
             
             currentMahasiswaData.forEach(mhs => {
                 const skorAbsen = Math.round((mhs.hadir / totalPertemuanIdeal) * 100);
                 const tr = document.createElement("tr");
-                tr.className = "hover:bg-slate-50 transition-colors";
+                tr.className = "table-custom-row";
                 tr.innerHTML = `
-                    <td class="text-center font-bold text-slate-400 py-3">${mhs.no}</td>
-                    <td class="text-center font-mono text-slate-600">${mhs.nim}</td>
-                    <td class="font-semibold text-slate-700 text-left">${mhs.nama}</td>
-                    <td class="text-center font-bold text-blue-600 bg-blue-50/30">${mhs.hadir}</td>
-                    <td class="text-center font-medium text-slate-600 bg-blue-50/30" id="skor-absen-${mhs.nim}">${skorAbsen}</td>
+                    <td class="text-center fw-bold text-secondary py-3">${mhs.no}</td>
+                    <td class="text-center font-mono text-dark text-opacity-75">${mhs.nim}</td>
+                    <td class="fw-semibold text-dark text-start">${mhs.nama}</td>
+                    <td class="text-center fw-bold text-primary" style="background-color: rgba(219, 234, 254, 0.3);">${mhs.hadir}</td>
+                    <td class="text-center fw-medium text-secondary" style="background-color: rgba(219, 234, 254, 0.3);" id="skor-absen-${mhs.nim}">${skorAbsen}</td>
                     <td>
-                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm font-semibold border-slate-200 text-slate-700 py-1 px-2 text-sm focus:border-blue-500 input-nilai-tugas" data-nim="${mhs.nim}" value="0">
+                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm fw-semibold border-secondary-subtle text-dark py-1 px-2 small input-nilai-tugas" data-nim="${mhs.nim}" value="0">
                     </td>
                     <td>
-                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm font-semibold border-slate-200 text-slate-700 py-1 px-2 text-sm focus:border-blue-500 input-nilai-uts" data-nim="${mhs.nim}" value="0">
+                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm fw-semibold border-secondary-subtle text-dark py-1 px-2 small input-nilai-uts" data-nim="${mhs.nim}" value="0">
                     </td>
                     <td>
-                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm font-semibold border-slate-200 text-slate-700 py-1 px-2 text-sm focus:border-blue-500 input-nilai-uas" data-nim="${mhs.nim}" value="0">
+                        <input type="number" min="0" max="100" class="form-control text-center shadow-sm fw-semibold border-secondary-subtle text-dark py-1 px-2 small input-nilai-uas" data-nim="${mhs.nim}" value="0">
                     </td>
-                    <td class="text-center font-bold text-slate-700 bg-slate-50 text-base" id="na-${mhs.nim}">0.00</td>
-                    <td class="text-center font-black text-lg" id="grade-${mhs.nim}">-</td>
-                    <td class="text-center text-xs space-y-1" id="status-${mhs.nim}"></td>
+                    <td class="text-center fw-bold text-dark bg-light" id="na-${mhs.nim}">0.00</td>
+                    <td class="text-center text-grade" id="grade-${mhs.nim}">-</td>
+                    <td class="text-center" id="status-${mhs.nim}" style="font-size: 0.75rem;"></td>
                 `;
                 tbody.appendChild(tr);
             });
             hitungNilaiAkademik();
         }
 
-        // Fungsi Kalkulasi Nilai Akhir Berdasarkan Regulasi Akademik UBSI
+        // Fungsi Kalkulasi Nilai Akhir
         function hitungNilaiAkademik() {
             currentMahasiswaData.forEach(mhs => {
                 const skorAbsen = Math.round((mhs.hadir / totalPertemuanIdeal) * 100);
@@ -245,47 +347,45 @@
                 const nUts = parseFloat(rowElem.querySelector(".input-nilai-uts").value) || 0;
                 const nUas = parseFloat(rowElem.querySelector(".input-nilai-uas").value) || 0;
 
-                // Bobot: Absen 20%, Tugas 25%, UTS 25%, UAS 30%
                 const nilaiAkhir = (skorAbsen * 0.20) + (nTugas * 0.25) + (nUts * 0.25) + (nUas * 0.30);
                 const naFix = nilaiAkhir.toFixed(2);
                 
                 document.getElementById(`na-${mhs.nim}`).innerText = naFix;
 
                 let grade = "E";
-                let colorClass = "text-rose-600";
+                let styleColor = "#dc3545"; // Bootstrap Red
                 let badgeStatus = "";
 
                 if (naFix >= 80) {
-                    grade = "A"; colorClass = "text-emerald-600";
-                    badgeStatus = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
+                    grade = "A"; styleColor = "#198754"; // Green
+                    badgeStatus = '<span class="badge-custom badge-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
                 } else if (naFix >= 68) {
-                    grade = "B"; colorClass = "text-teal-600";
-                    badgeStatus = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
+                    grade = "B"; styleColor = "#0dcaf0"; // Cyan/Teal
+                    badgeStatus = '<span class="badge-custom badge-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
                 } else if (naFix >= 56) {
-                    grade = "C"; colorClass = "text-amber-600";
-                    badgeStatus = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
+                    grade = "C"; styleColor = "#ffc107"; // Amber
+                    badgeStatus = '<span class="badge-custom badge-lulus"><i class="bi bi-check-circle-fill me-1"></i>Lulus</span>';
                 } else if (naFix >= 31) {
-                    grade = "D"; colorClass = "text-orange-500";
-                    badgeStatus = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"><i class="bi bi-exclamation-triangle-fill me-1"></i>Wajib Her</span>';
+                    grade = "D"; styleColor = "#fd7e14"; // Orange
+                    badgeStatus = '<span class="badge-custom badge-her"><i class="bi bi-exclamation-triangle-fill me-1"></i>Wajib Her</span>';
                 } else {
-                    grade = "E"; colorClass = "text-rose-600";
-                    badgeStatus = '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800"><i class="bi bi-x-circle-fill me-1"></i>Gagal</span>';
+                    grade = "E"; styleColor = "#dc3545"; // Red
+                    badgeStatus = '<span class="badge-custom badge-gagal"><i class="bi bi-x-circle-fill me-1"></i>Gagal</span>';
                 }
 
                 const gradeElem = document.getElementById(`grade-${mhs.nim}`);
                 gradeElem.innerText = grade;
-                gradeElem.className = `text-center font-black text-lg ${colorClass}`;
+                gradeElem.style.color = styleColor;
 
-                // Aturan Kehadiran Kuliah UBSI minimal 75% (Minimal 9 kehadiran dari 12 tatap muka)
                 if (mhs.hadir < 9) {
-                    badgeStatus += `<div class="text-[10px] text-rose-600 font-bold mt-1 tracking-tight"><i class="bi bi-shield-slash"></i> Kehadiran ${Math.round((mhs.hadir/12)*100)}% (&lt;75%)</div>`;
+                    badgeStatus += `<div class="text-danger fw-bold mt-1 tracking-tight" style="font-size: 10px;"><i class="bi bi-shield-slash"></i> Kehadiran ${Math.round((mhs.hadir/12)*100)}% (&lt;75%)</div>`;
                 }
 
                 document.getElementById(`status-${mhs.nim}`).innerHTML = badgeStatus;
             });
         }
 
-        // FITUR BARU: Logika Membaca File Excel Terunggah (.XLSX/.XLS)
+        // Impor Berkas .CSV, .XLS, dan .XLSX
         document.getElementById('upload-excel').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -297,30 +397,27 @@
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
                 
-                // Konversi baris excel menjadi struktur JSON Array
                 const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
                 if(jsonData.length > 0) {
-                    // Petakan kolom Excel ke struktur aplikasi (Mendukung variasi penulisan huruf kapital/kecil)
                     currentMahasiswaData = jsonData.map((row, index) => {
                         return {
                             no: row.No || row.no || (index + 1),
-                            nim: row.NIM || row.Nim || row.nim || `NIM-${index}`,
-                            nama: row.Nama || row.NamaMhs || row.nama || "Tanpa Nama",
-                            hadir: parseInt(row.Hadir || row.Jumlah || row.hadir || 0)
+                            nim: row.NIM || row.Nim || row.nim || row['Nama Mhs'] ? row.Nim : `NIM-${index}`, 
+                            nama: row.Nama || row['Nama Mhs'] || row.NamaMhs || row.nama || "Tanpa Nama",
+                            hadir: parseInt(row.Hadir || row.Jumlah || row.jumlah || row.hadir || 0)
                         };
                     });
-                    // Refresh rendering isi tabel
                     renderTabel();
-                    alert("Data mahasiswa berhasil diimport dari file Excel!");
+                    alert("Data mahasiswa berhasil diimport dari berkas dokumen!");
                 } else {
-                    alert("File Excel kosong atau format kolom tidak sesuai.");
+                    alert("Gagal memproses data. Pastikan format berkas diisi dengan benar.");
                 }
             };
             reader.readAsArrayBuffer(file);
         });
 
-        // Event Listener untuk input angka nilai mahasiswa secara langsung
+        // Event Listener input nilai angka real-time
         document.addEventListener("input", function(e) {
             if(e.target.classList.contains('input-nilai-tugas') || e.target.classList.contains('input-nilai-uts') || e.target.classList.contains('input-nilai-uas')) {
                 if(e.target.value > 100) e.target.value = 100;
@@ -338,7 +435,6 @@
             hitungNilaiAkademik();
         }
 
-        // Inisialisasi penampilan data saat pertama kali aplikasi dibuka
         window.onload = renderTabel;
     </script>
 </body>
